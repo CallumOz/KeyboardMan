@@ -59,38 +59,38 @@ public class KeyboardMan: NSObject {
 
     var keyboardInfo: KeyboardInfo? {
         willSet {
-            if UIApplication.sharedApplication().applicationState != .Active {
+            guard UIApplication.sharedApplication().applicationState == .Active else {
                 return
             }
 
             if let info = newValue {
                 if !info.isSameAction || info.heightIncrement != 0 {
-
+                    
                     // do convenient animation
-
+                    
                     let duration = info.animationDuration
                     let curve = info.animationCurve
                     let options = UIViewAnimationOptions(rawValue: curve << 16 | UIViewAnimationOptions.BeginFromCurrentState.rawValue)
-
+                    
                     UIView.animateWithDuration(duration, delay: 0, options: options, animations: {
-
+                        
                         switch info.action {
-
+                            
                         case .Show:
                             self.animateWhenKeyboardAppear?(appearPostIndex: self.appearPostIndex, keyboardHeight: info.height, keyboardHeightIncrement: info.heightIncrement)
-
+                            
                             self.appearPostIndex++
-
+                            
                         case .Hide:
                             self.animateWhenKeyboardDisappear?(keyboardHeight: info.height)
-
+                            
                             self.appearPostIndex = 0
                         }
-
-                    }, completion: nil)
-
+                        
+                        }, completion: nil)
+                    
                     // post full info
-
+                    
                     postKeyboardInfo?(keyboardMan: self, keyboardInfo: info)
                 }
             }
