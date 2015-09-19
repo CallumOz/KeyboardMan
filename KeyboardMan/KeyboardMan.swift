@@ -16,6 +16,7 @@ public class KeyboardMan: NSObject {
 
             keyboardObserver?.addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
             keyboardObserver?.addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+            keyboardObserver?.addObserver(self, selector: "keyboardDidShow:", name: UIKeyboardDidShowNotification, object: nil)
             keyboardObserver?.addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
             keyboardObserver?.addObserver(self, selector: "keyboardDidHide:", name: UIKeyboardDidHideNotification, object: nil)
         }
@@ -108,6 +109,31 @@ public class KeyboardMan: NSObject {
         }
     }
 
+    public var keyboardWillShow: (() -> Void)? {
+        didSet {
+            keyboardObserveEnabled = true
+        }
+    }
+
+    public var keyboardDidShow: (() -> Void)? {
+        didSet {
+            keyboardObserveEnabled = true
+        }
+    }
+
+    public var keyboardWillHide: (() -> Void)? {
+        didSet {
+            keyboardObserveEnabled = true
+        }
+    }
+
+    public var keyboardDidHide: (() -> Void)? {
+        didSet {
+            keyboardObserveEnabled = true
+        }
+    }
+
+    
     public var postKeyboardInfo: ((keyboardMan: KeyboardMan, keyboardInfo: KeyboardInfo) -> Void)? {
         didSet {
             keyboardObserveEnabled = true
@@ -150,6 +176,7 @@ public class KeyboardMan: NSObject {
 
     func keyboardWillShow(notification: NSNotification) {
 
+        keyboardWillShow?()
         handleKeyboard(notification, .Show)
     }
     
@@ -163,13 +190,20 @@ public class KeyboardMan: NSObject {
         }
     }
 
+    func keyboardDidShow(notification: NSNotification) {
+        
+        keyboardDidShow?()
+    }
+    
     func keyboardWillHide(notification: NSNotification) {
 
+        keyboardWillHide?()
         handleKeyboard(notification, .Hide)
     }
 
     func keyboardDidHide(notification: NSNotification) {
 
+        keyboardDidHide?()
         keyboardInfo = nil
     }
 }
